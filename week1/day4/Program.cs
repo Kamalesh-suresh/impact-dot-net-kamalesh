@@ -32,6 +32,9 @@ Console.WriteLine($"Min value is {min} and Max value is {max}");
 var (name, age, department) = LookUpEmployeeById(1);
 Console.WriteLine($"{name}, {age}, {department}");
 
+
+  
+
 string Describe(object value) => value switch
 {
     int i => $"int: {i}",

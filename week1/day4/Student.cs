@@ -17,6 +17,7 @@ public class Student
 	}
 
 	public const string SchoolName = "Psiog Digital";
+	
 	public readonly DateTime EnrolledOn;
 
 
