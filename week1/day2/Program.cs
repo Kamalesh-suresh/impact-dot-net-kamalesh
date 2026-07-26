@@ -22,26 +22,26 @@
 //ModuleB.Helper.Greet();
 
 
-//string @class= "chemistry";
+string @class = "chemistry";
 
-//Console.WriteLine(@class);
+Console.WriteLine(@class);
 
-//Console.ReadKey();
-
-
-
-#define TRIAL_VERSION
-
-using System;
-
-#if TRIAL_VERSION
-Console.WriteLine("Trial version limited features");
-#else
-Console.WriteLine("Full version all features");
-#endif
-
-
-var info = new AppInfo("1.0 trial");
-info.PrintInfo();
-Console.WriteLine(info.Version);
 Console.ReadKey();
+
+
+
+//#define TRIAL_VERSION
+
+//using System;
+
+//#if TRIAL_VERSION
+//Console.WriteLine("Trial version limited features");
+//#else
+//Console.WriteLine("Full version all features");
+//#endif
+
+
+//var info = new AppInfo("1.0 trial");
+//info.PrintInfo();
+//Console.WriteLine(info.Version);
+//Console.ReadKey();
