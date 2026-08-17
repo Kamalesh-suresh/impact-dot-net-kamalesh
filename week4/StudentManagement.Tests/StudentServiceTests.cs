@@ -93,4 +93,71 @@ public class StudentServiceTests
         service.AddStudent(new Student { Name = "Ravi", Age = 20, RollNumber = "R013", Email = "r@x.com" });
         log.Verify(l => l.Record(It.Is<string>(s => s.Contains("ADD"))), Times.Once);
     }
+
+    [Fact]
+    public void GetAll_ReturnsEveryStudentFromRepository()
+    {
+        var existing = new List<Student>
+        {
+            new() { Id = 1, Name = "A", Age = 20, RollNumber = "R001", Email = "a@x.com" },
+            new() { Id = 2, Name = "B", Age = 21, RollNumber = "R002", Email = "b@x.com" },
+        };
+        var service = BuildService(out _, out _, existing);
+
+        Assert.Equal(2, service.GetAll().Count());
+    }
+
+    [Fact]
+    public void GetById_ExistingId_ReturnsThatStudent()
+    {
+        var target = new Student { Id = 7, Name = "Z", Age = 30, RollNumber = "R007", Email = "z@x.com" };
+        var service = BuildService(out var repo, out _);
+        repo.Setup(r => r.GetById(7)).Returns(target);
+
+        Assert.Same(target, service.GetById(7));
+    }
+
+    [Fact]
+    public void UpdateStudent_ExistingId_Succeeds()
+    {
+        var current = new Student { Id = 1, Name = "Old", Age = 20, RollNumber = "R001", Email = "o@x.com" };
+        var service = BuildService(out var repo, out var log, new List<Student> { current });
+        repo.Setup(r => r.GetById(1)).Returns(current);
+        repo.Setup(r => r.Update(It.IsAny<Student>())).Returns(true);
+
+        var edited = new Student { Id = 1, Name = "New", Age = 21, RollNumber = "R001", Email = "n@x.com" };
+        var result = service.UpdateStudent(edited);
+
+        Assert.True(result.Success);
+        repo.Verify(r => r.Update(It.IsAny<Student>()), Times.Once);
+        log.Verify(l => l.Record(It.Is<string>(s => s.Contains("UPDATE"))), Times.Once);
+    }
+
+    [Fact]
+    public void UpdateStudent_RollClashWithAnother_IsRejected()
+    {
+        var a = new Student { Id = 1, Name = "A", Age = 20, RollNumber = "R001", Email = "a@x.com" };
+        var b = new Student { Id = 2, Name = "B", Age = 21, RollNumber = "R002", Email = "b@x.com" };
+        var service = BuildService(out var repo, out _, new List<Student> { a, b });
+        repo.Setup(r => r.GetById(2)).Returns(b);
+
+        // Try to change B's roll to R001, which A already owns.
+        var edited = new Student { Id = 2, Name = "B", Age = 21, RollNumber = "R001", Email = "b@x.com" };
+        var result = service.UpdateStudent(edited);
+
+        Assert.False(result.Success);
+        repo.Verify(r => r.Update(It.IsAny<Student>()), Times.Never);
+    }
+
+    [Fact]
+    public void DeleteStudent_ExistingId_Succeeds()
+    {
+        var service = BuildService(out var repo, out var log);
+        repo.Setup(r => r.Delete(3)).Returns(true);
+
+        var result = service.DeleteStudent(3);
+
+        Assert.True(result.Success);
+        log.Verify(l => l.Record(It.Is<string>(s => s.Contains("DELETE"))), Times.Once);
+    }
 }
