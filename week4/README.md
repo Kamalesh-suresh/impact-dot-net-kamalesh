@@ -22,6 +22,26 @@ StudentManagement.App/
 StudentManagement.Tests/   xUnit + Moq tests targeting the Service (+ Model)
 ```
 
+## Scaffolding (commands used to create this solution)
+```bash
+# Solution + projects
+dotnet new sln -n StudentManagement
+dotnet new console -n StudentManagement.App -o StudentManagement.App
+dotnet new xunit -n StudentManagement.Tests -o StudentManagement.Tests
+
+# Wire the projects into the solution
+dotnet sln StudentManagement.sln add StudentManagement.App/StudentManagement.App.csproj
+dotnet sln StudentManagement.sln add StudentManagement.Tests/StudentManagement.Tests.csproj
+
+# Test project needs to see the app's classes
+dotnet add StudentManagement.Tests/StudentManagement.Tests.csproj reference StudentManagement.App/StudentManagement.App.csproj
+
+# Packages
+dotnet add StudentManagement.App/StudentManagement.App.csproj package Microsoft.Extensions.DependencyInjection --version 8.0.1
+dotnet add StudentManagement.Tests/StudentManagement.Tests.csproj package Moq --version 4.20.72
+```
+`dotnet new xunit` already pulls in `Microsoft.NET.Test.Sdk`, `xunit`, `xunit.runner.visualstudio`, and `coverlet.collector` — only `Moq` needed adding by hand.
+
 ## Run
 ```bash
 dotnet run --project StudentManagement.App              # Microsoft DI container (Task 4.8)
