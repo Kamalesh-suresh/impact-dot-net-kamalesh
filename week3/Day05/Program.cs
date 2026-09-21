@@ -62,3 +62,18 @@ Console.WriteLine("--- Sorted by name (via EmployeeNameComparer) ---");
 var byName = new List<Employee>(employees);
 byName.Sort(new EmployeeNameComparer());
 foreach (var e in byName) Console.WriteLine(e);
+
+
+public interface IVehicle
+{
+    void Drive();
+}
+
+public abstract class VehicleFactoryBase
+{
+    public abstract IVehicle Create();
+    public void Deliver() => Create().Drive();
+
+}
+
+

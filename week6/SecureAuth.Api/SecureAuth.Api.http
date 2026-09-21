@@ -1,0 +1,39 @@
+@SecureAuth.Api_HostAddress = http://localhost:5080
+
+### Login as the seeded Teacher -> expect 200 + a JWT with role "Teacher"
+POST {{SecureAuth.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "mr_rao",
+  "password": "teacher-pass-123"
+}
+
+### Login as the seeded Student -> expect 200 + a JWT with role "Student"
+POST {{SecureAuth.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "password": "student-pass-123"
+}
+
+### Wrong password -> expect 401
+POST {{SecureAuth.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "password": "wrong-password"
+}
+
+### No token -> expect 401
+POST {{SecureAuth.Api_HostAddress}}/api/grades/publish
+
+### Paste a Teacher token from the first login above -> expect 200
+POST {{SecureAuth.Api_HostAddress}}/api/grades/publish
+Authorization: Bearer PASTE_TEACHER_TOKEN_HERE
+
+### Paste a Student token from the second login above -> expect 403
+POST {{SecureAuth.Api_HostAddress}}/api/grades/publish
+Authorization: Bearer PASTE_STUDENT_TOKEN_HERE
